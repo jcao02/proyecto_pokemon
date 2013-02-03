@@ -39,7 +39,8 @@ data Especie = Especie
 -- Declaracion de Ataques   
 data Ataque = Ataque 
   { nombreAtaq :: String
-  , tipo       :: Bool
+  , tipo       :: Tipo
+  , fisico     :: Bool
   , pps        :: Int
   , pow        :: Int
   } deriving (Show)
