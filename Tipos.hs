@@ -57,7 +57,6 @@ data Monstruo = Monstruo
   } deriving(Show)
  
 -- Funciones para acceder a ciertos atributos de un tipo
-
 getHp :: Monstruo -> Int
 
 getHp (Monstruo _ _ _ hp _ _ _) = hp
