@@ -1,3 +1,4 @@
+import Tipos
 -- Archivo que contiene funciones para calcular ciertos atributos
 
 
@@ -25,3 +26,12 @@ damage :: Int -> Int -> Int -> Int -> Double -> Int
 damage nvlA pow atq def modi = floor (modi * fromIntegral (div dividendo 50 + 2) )
   where 
   dividendo = ((div (2 * nvlA) 5) + 2) * pow * div atq def 
+
+-- Funcion que determina si un pokemon esta conciente
+
+estaConciente :: Monstruo -> Bool
+
+estaConciente pokemon 
+  | getHp pokemon <= 0  = False
+  | otherwise           = True
+

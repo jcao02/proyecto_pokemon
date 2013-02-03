@@ -1,5 +1,5 @@
 -- Declaraciones de Tipos de Datos 
-
+module Tipos where
 -- Declaracion de Tipos de Pokemon
 data Tipo
   = Bug
@@ -54,4 +54,9 @@ data Monstruo = Monstruo
   , individual  :: Int
   , esfuerzo    :: Int
   } deriving(Show)
-  
+ 
+-- Funciones para acceder a ciertos atributos de un tipo
+
+getHp :: Monstruo -> Int
+
+getHp (Monstruo _ _ _ hp _ _ _) = hp
