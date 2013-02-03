@@ -1,4 +1,4 @@
-import Tipos
+import Pokemon
 -- Archivo que contiene funciones para calcular ciertos atributos
 
 
