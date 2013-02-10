@@ -1,5 +1,3 @@
-hola 
-como estas
-mary
-fin 
-otra vez estoy aqui 
+1,hola,como,estas,mary,fin,, vez, estoy, aqui,,
+2,hola,,estas,mary,fin, otra, vez, estoy, aqui,,
+3,hola,como,estas,,fin, otra, vez, estoy, aqui,,
