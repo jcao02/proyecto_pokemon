@@ -1,5 +1,6 @@
 module Main ( main ) where
 
+import Pokemon
 import System.IO
 import Data.Char(toUpper)
 import System.Posix.Files
@@ -22,8 +23,5 @@ main :: IO ()
 
 main = do 
   args  <- getArgs
-  if (length args) == 4 then
-    abrirFile(args)
-  else 
-    print "Tiene que introducir 4 nombres de archivos"
+  if (length args) == 4 then abrirFile(args) else print "Tiene que introducir 4 nombres de archivos"
   
