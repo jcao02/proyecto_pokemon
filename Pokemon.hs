@@ -23,7 +23,7 @@ data Tipo
   
 -- Relacion entre los tipos de ataques
 relacionAtaqueTipo :: Tipo      -- Tipo de ataque a determinar la relación.
-                   -> ( [Tipo]  -- Tipos super efectivos a el (2x dano). 
+                   -> ( [Tipo]  -- Tipos debiles a el (2x dano). 
                       , [Tipo]  -- Tipos resistentes a el (0.5x dano).
                       , [Tipo]  -- Tipos inmunes a el (0x dano).
                       )
@@ -52,15 +52,15 @@ relacionAtaqueTipo x
 data Especie = Especie
   { numero      :: Int 
   , nombreEsp   :: String
-  , tipoElem    :: (Tipo, Tipo) 
+  , tipoElem    :: [Tipo] 
   , hp          :: Int
   , ataque      :: Int
   , defensa     :: Int
   , ataqueEsp   :: Int
   , defensaEsp  :: Int
   , velocidad   :: Int 
-  , prevolucion :: Monstruo   -- Entero que identifican al pokemon padre 
-  , evolucion   :: Monstruo   -- Entero que identifica al pokemon hijo
+  , prevolucion :: Int   -- Entero que identifican al pokemon padre 
+  , evolucion   :: Int   -- Entero que identifica al pokemon hijo
   } deriving (Show) 
 
 -- Declaracion de Ataques   

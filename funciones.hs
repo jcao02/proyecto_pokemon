@@ -19,9 +19,7 @@ estadistica iv base ev nvl = div (dividendo * nvl) 100 +5
 
 
 -- Funcion que calcula el daño de un ataque
--- Falta ver bien la comparacion de tipos para el modificador!!!!!!!!!!!
-
-damage :: Int -> Int -> Int -> Int -> Double -> Int
+damage :: Int -> Int -> Int -> Int -> Float -> Int
 
 damage nvlA pow atq def modi = floor (modi * fromIntegral (div dividendo 50 + 2) )
   where 
@@ -35,3 +33,45 @@ estaConciente pokemon
   | getHp pokemon <= 0  = False
   | otherwise           = True
 
+
+--Retorna el modificador de daño, recibiendo las especies de los Monstruos que pelean y el ataque realizado
+
+modificadorDano :: Especie -> Ataque -> Especie -> Float
+
+modificadorDano ofensivo atq defensivo 
+  | mismoTipo (tipoElem ofensivo) = 1.5 * compararTipo (tipoElem defensivo)
+  | otherwise                     = compararTipo (tipoElem defensivo)
+
+  where
+    -- Se compara el tipo del ataque con el tipo del atacante
+    mismoTipo []      = False
+    mismoTipo (x:xs)
+      | x == tipo atq = True
+      | otherwise     = False || mismoTipo xs
+    
+    -- Se compara el tipo del ataque con la lista de tipos del defensor
+    compararTipo []     = 1.0
+    compararTipo (x:xs) = cantidadDano (relacionAtaqueTipo $ tipo atq) x * compararTipo xs
+
+      where
+        -- Retorna la cantidad de daño dado por la tupla y el tipo
+        cantidadDano (x, y, z) tipo 
+          | elem tipo x = 2.0
+          | elem tipo y = 0.5
+          | elem tipo z = 0.0
+          | otherwise   = 1.0
+
+-- Retorna un Monstruo con hp decrementada por el daño y el otro con pps menos por el ataque
+-- FALTA DISMINUIR PPS DEL ATACANTE--------------------
+atacar :: Monstruo -> Monstruo -> Ataque -> Monstruo
+
+atacar m1 m2 atq = m2 { hpAct = ((hpAct m1) - dano) }
+
+  where 
+    dano = damage lvl pod atk def modi
+
+    lvl = nivel m1
+    pod = pow atq
+    atk = estadistica 31 (ataque (especie m1)) 255 (nivel m1)
+    def = estadistica 31 (defensa (especie m2)) 255 (nivel m2)
+    modi = modificadorDano (especie m1) atq (especie m2)
