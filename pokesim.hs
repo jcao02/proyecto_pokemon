@@ -15,7 +15,7 @@ abrirFile args = do
   fileAtaq <- readFile ((!!) args 1) 
   equipo1  <- readFile ((!!) args 2) 
   equipo2  <- readFile ((!!) args 3) 
-  putStr (return fileEsp)
+  putStr (fileEsp)
   
 -- Funcion principal 
 main :: IO ()
@@ -27,4 +27,3 @@ main = do
   else 
     print "Tiene que introducir 4 nombres de archivos"
   
-
