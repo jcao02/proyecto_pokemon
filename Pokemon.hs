@@ -59,14 +59,14 @@ data Especie = Especie
   , ataqueEsp   :: Int
   , defensaEsp  :: Int
   , velocidad   :: Int 
-  , prevolucion :: Int   -- Entero que identifican al pokemon padre 
-  , evolucion   :: Int   -- Entero que identifica al pokemon hijo
+  , prevolucion :: String   -- String que identifican al pokemon padre 
+  , evolucion   :: String   -- String que identifica al pokemon hijo
   } deriving (Show) 
 
 -- Declaracion de Ataques   
 data Ataque = Ataque 
   { nombreAtaq :: String
-  , tipo       :: Tipo
+  , tipo       :: Tipo  
   , fisico     :: Bool
   , pps        :: Int
   , pow        :: Int
@@ -74,11 +74,11 @@ data Ataque = Ataque
   
 -- Declaracion de Monstruo
 data Monstruo = Monstruo
-  { especie     :: Especie 
+  { especie     :: Especie
   , sobreNombre :: String
   , nivel       :: Int
   , hpAct       :: Int
-  , ataques     :: [Ataque]
+  , ataques     :: [Ataque] 
   , individual  :: Int
   , esfuerzo    :: Int
   } deriving(Show)
