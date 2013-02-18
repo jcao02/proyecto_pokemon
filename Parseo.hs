@@ -50,7 +50,7 @@ listaMonstruo xs esp atq = map crear xs
   where
     crear :: [String] -> Monstruo
     crear [c0, c1, c2, c3, c4, c5, c6] = Monstruo { especie     = esps
-					                                        , sobreNombre = c1
+					          , sobreNombre = c1
                                                   , nivel       = read c2 :: Int
                                                   , hpAct       = maxHp 31 (hp esps) 255 (read c2 :: Int) 
                                                   , ataques     = atqs

@@ -82,7 +82,8 @@ data Monstruo = Monstruo
   , individual  :: Int
   , esfuerzo    :: Int
   } deriving(Show)
- 
+  
+  
 -- Funciones para acceder a ciertos atributos de un tipo
 getHp :: Monstruo -> Int
 
