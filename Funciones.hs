@@ -1,3 +1,4 @@
+-- Modulo de funciones para calcular atributos de los pokemones
 module Funciones where
 import Pokemon
 -- Archivo que contiene funciones para calcular ciertos atributos
@@ -20,36 +21,23 @@ estadistica iv base ev nvl = div (dividendo * nvl) 100 +5
 
 
 -- Funcion que calcula el daño de un ataque
-damage :: Int -> Int -> Int -> Int -> Float -> Int
+damage :: Int -> Int -> Int -> Int -> Int -> Int
 
-damage nvlA pow atq def modi = floor (modi * fromIntegral (div dividendo 50 + 2) )
+damage nvlA pow atq def modi = modi * fromIntegral (div dividendo 50 + 2)
   where 
   dividendo = ((div (2 * nvlA) 5) + 2) * pow * div atq def 
 
--- Funcion que determina si un pokemon esta conciente
-
-estaConciente :: Monstruo -> Bool
-
-estaConciente pokemon 
-  | getHp pokemon <= 0  = False
-  | otherwise           = True
-
-
 --Retorna el modificador de daño, recibiendo las especies de los Monstruos que pelean y el ataque realizado
+modDano :: Especie -> Ataque -> Especie -> Int
 
-modificadorDano :: Especie -> Ataque -> Especie -> Float
-
-modificadorDano ofensivo atq defensivo 
-  | mismoTipo (tipoElem ofensivo) = 1.5 * compararTipo (tipoElem defensivo)
-  | otherwise                     = compararTipo (tipoElem defensivo)
+modDano ofensivo atq defensivo 
+  | mismoTipo (tipoElem ofensivo) = floor $ 1.5 * compararTipo (tipoElem defensivo)
+  | otherwise                     = floor $ compararTipo (tipoElem defensivo)
 
   where
     -- Se compara el tipo del ataque con el tipo del atacante
-    mismoTipo []      = False
-    mismoTipo (x:xs)
-      | x == tipo atq = True
-      | otherwise     = False || mismoTipo xs
-    
+    mismoTipo xs = foldl (||) False (map (\x -> x == tipo atq) xs)  
+
     -- Se compara el tipo del ataque con la lista de tipos del defensor
     compararTipo []     = 1.0
     compararTipo (x:xs) = cantidadDano (relacionAtaqueTipo $ tipo atq) x * compararTipo xs
@@ -61,18 +49,3 @@ modificadorDano ofensivo atq defensivo
           | elem tipo y = 0.5
           | elem tipo z = 0.0
           | otherwise   = 1.0
-
--- Retorna un Monstruo con hp decrementada por el daño y el otro con pps menos por el ataque
--- FALTA DISMINUIR PPS DEL ATACANTE--------------------
-atacar :: Monstruo -> Monstruo -> Ataque -> Monstruo
-
-atacar m1 m2 atq = m2 { hpAct = ((hpAct m1) - dano) }
-
-  where 
-    dano = damage lvl pod atk def modi
-
-    lvl = nivel m1
-    pod = pow atq
-    atk = estadistica 31 (ataque (especie m1)) 255 (nivel m1)
-    def = estadistica 31 (defensa (especie m2)) 255 (nivel m2)
-    modi = modificadorDano (especie m1) atq (especie m2)
