@@ -109,7 +109,7 @@ getComando :: Entrenador -> Entrenador ->  IO ((Comando,Int))
 getComando ent1 ent2 = do
   putStr "\nEntrenador "
   print $ posicion ent1
-  putStrLn " introduzca un Comando"
+  putStrLn "Introduzca un Comando"
   comando <- getLine
   if comando == "\n" then 
     getComando ent1 ent2
@@ -129,7 +129,7 @@ getComando ent1 ent2 = do
 			      putStrLn "Introdujo un comando invalido"
 			      getComando ent1 ent2
 	 RENDIRSE  -> return (com , -1)
-	 ATACAR   -> if puedeAtacar ent1 (read comando :: Int) then return (com , read ((!!) (words comando) 1) :: Int )
+	 ATACAR   -> if puedeAtacar ent1 (read (words comando !! 1) :: Int) then return (com , read (words comando !! 1) :: Int )
 				       else do
 					 putStrLn "No hay suficientes PPs para atacar, intente de nuevo"
 					 getComando ent1 ent2
@@ -139,8 +139,8 @@ getComando ent1 ent2 = do
 -- Funcion que realiza las acciones que restan turno
 turno :: Entrenador -> Entrenador -> IO ()
 turno nEnt1 nEnt2 = do
-  let ent1 = chequearVivos nEnt1
-  let ent2 = chequearVivos nEnt2
+  ent1 <- chequearVivos nEnt1 1
+  ent2 <- chequearVivos nEnt2 2
   comandos <- getAcciones ent1 ent2 
   case comandos of 
        ((RENDIRSE,-1),(RENDIRSE,-1))   -> jugadaRendirse 0
@@ -154,18 +154,15 @@ turno nEnt1 nEnt2 = do
 					     let ent1 = aux
 					     -- Realizar ataque del 2do Entrenador
 					     putStrLn $ "/nRealizando ataque al pokemon " ++ sobreNombre (getActual ent1)
-					     let mons = chequearVelocidad ent2 ent1
-					     --atacar (snd mons) (fst mons) 
+					     let (ent2, ent1) = atacar ent2 num2 ent1 
 					     -- CAMBIO DE TURNO 
 					     turno ent1 ent2 
        ((ATACAR,num1), (CAMBIAR,num2)) -> do -- Realizar ataque del 1er Entrenador
-					     putStrLn $ "Realizando ataque al pokemon " ++ sobreNombre (getActual ent2)
-					     let mons = chequearVelocidad ent1 ent2 
-					     --atacar (fst mons) (snd mons) 
-					     -- Realizar cambio del pokemon del 2do Entrenador
-					     putStr "Realizando cambio de pokemon para el Entrenador "
+               putStr "Realizando cambio de pokemon para el Entrenador "
 					     print (posicion ent2)
 					     let ent2 = cambiarPokemon ent2 num2
+					     putStrLn $ "Realizando ataque al pokemon " ++ sobreNombre (getActual ent2)
+					     let (ent1, ent2) = atacar ent1 num2 ent2 
 					     -- CAMBIO DE TURNO 
 					     turno ent1 ent2 
        ((CAMBIAR,num1),(CAMBIAR,num2)) -> do -- Realizar cambio del pokemon del 1er Entrenador
@@ -179,12 +176,21 @@ turno nEnt1 nEnt2 = do
 					     -- CAMBIO DE TURNO 
 					     turno ent1 ent2 
        ((ATACAR,num1) , (ATACAR,num2)) -> do -- Realizar ataque entre entrenadores
-					     putStr $ "Realizando ataque al pokemon " ++ sobreNombre (getActual ent1)
 					     let mons = chequearVelocidad ent1 ent2  
-					     --atacar (fst mons) (snd mons) 
-					     putStr $ "Realizando ataque al pokemon " ++ sobreNombre (getActual ent2)
-					     --atacar (snd mons) (fst mons)
-       otherwise                       -> do print "Introdujeron comandos invalidos"
+					     if (fst mons) == (getActual ent1) then do
+					       putStr $ "Realizando ataque al pokemon " ++ sobreNombre (getActual ent1)
+					       let (ent1, ent2) = atacar (fst mons) num1 (snd mons)
+					       putStr $ "Realizando ataque al pokemon " ++ sobreNombre (getActual ent2)
+					       let (ent1, ent2) = atacar (snd mons) num2 (fst mons) 
+					       turno ent1 ent2
+					     else
+					       putStr $ "Realizando ataque al pokemon " ++ sobreNombre (getActual ent2)
+					       let (ent1, ent2) = atacar (snd mons) num2 (fst mons)
+					       putStr $ "Realizando ataque al pokemon " ++ sobreNombre (getActual ent1)
+					       let (ent1, ent2) = atacar (fst mons) num1 (snd mons) 
+					       turno ent1 ent2
+       otherwise                       -> do 
+                "Introdujeron comandos invalidos"
 					     -- NUEVO TURNO 
 					     turno ent1 ent2  
     
