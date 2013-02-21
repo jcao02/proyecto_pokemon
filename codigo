@@ -1,0 +1,117 @@
+-- -- Funcion que determina el tipo de comando
+-- verificarUno :: [String] -> Entrenador -> Entrenador -> IO ()
+-- verificarUno l ent1 ent2 = do 
+--   let primer = (!!) l 0
+--   if primer == "info[yo]" then do 
+--     putStrLn "\nINFORMACION DE SU MONSTRUO ACTUAL"
+--     mostrarInfo ent1
+--     turno1 ent1 ent2
+--   else if primer == "info[rival]" then do  
+--     putStrLn "\nINFORMACION DEL MONSTRUO ADVERSARIO"
+--     mostrarInfo ent2  
+--     turno1 ent1 ent2
+--     else if primer == "ayuda" then do       
+--       putStrLn "\nAYUDA "
+--       mostrarAyuda ent1
+--       turno1 ent1 ent2
+--       else if primer == "rendirse" then     
+-- 	putStrLn "El entrenador se ha rendido" 
+-- 	else 
+-- 	  putStrLn "Ha introducido un comando invalido"
+--     
+--    
+-- -- Funcion que determina el tipo de comando
+-- verificarUno1 :: [String] -> Entrenador -> Entrenador -> IO ()
+-- verificarUno1 l ent1 ent2 = do 
+--   let primer = (!!) l 0
+--   if primer == "info[yo]" then do 
+--     putStrLn "\nINFORMACION DE SU MONSTRUO ACTUAL"
+--     mostrarInfo ent1
+--     turno2 ent1    
+--     else if primer == "info[rival]" then do   
+--       putStrLn "\nINFORMACION DEL MONSTRUO ADVERSARIO"			    
+--       mostrarInfo ent2  
+--       turno2 ent1 
+-- 	  else if primer == "ayuda" then do    
+-- 	    putStrLn "\nAYUDA "
+-- 	    mostrarAyuda ent1
+-- 	    turno2 ent1 
+-- 		else if primer == "rendirse" then   
+-- 		  putStrLn "El entrenador se ha rendido"                        
+-- 		  else 
+-- 		    putStrLn "Ha introducido un comando invalido"
+--     
+-- -- Funcion que determina el tipo de comando    
+-- verificarDos :: [String] -> Int
+-- verificarDos l 
+--   | primer == "atacar"  = 1 
+-- --     putStrLn "Realizando el ataque seleccionado..." 
+-- --     let algo = atacar mons1 mons2 num 
+-- --     putStr ""
+--   | primer == "cambiar" = 2 
+-- --     putStrLn "Realizando el cambio seleccionado..." 
+-- --     let some = cambiarPokemon ent1 num 
+-- --     putStr ""
+--   | otherwise           = -1
+--   
+--   where 
+--     primer = (!!) l 0
+-- --     num    = read ((!!) l 1) :: Int 
+-- --     mons1  = (!!) (pokemones ent1) (actual ent1)
+-- --     mons2  = (!!) (pokemones ent2) (actual ent2)    
+--     
+-- 
+-- tamCadena :: Entrenador -> Entrenador -> [String] -> [String] -> IO ()  
+-- tamCadena ent1 ent2 cadena1 cadena2 = do
+--   if cond1 then do 			    -- si ambos entrenadores escogieron unas opcion de info/ayuda
+--     verificarUno cadena1 ent1 ent2  
+--     verificarUno cadena2 ent1 ent2 
+--     
+-- 	   else if cond2 then do	    -- si el primer entrenador escoge info/ayuda
+--       verificarUno1 cadena1 ent1 
+--       let res2 = verificarDos cadena2 
+--       realizarJugada res1 res2 ent1 ent2
+--       
+-- 		  else if cond3 then do	    -- si el segundo entrenador escoge info/ayuda
+-- 	let res1 = verificarDos cadena1 
+-- 	verificarUno1 cadena2 ent2 
+-- 	realizarJugada res1 res2 ent1 ent2
+-- 	
+-- 		  else if cond4 then do	    -- si ambos entrenadores seleccionan opciones de batalla
+-- 	  let res1 = verificarDos cadena1 
+-- 	  let res2 = verificarDos cadena2 
+-- 	  realizarJugada res1 res2 ent1 ent2
+-- 		  else print "Ha introducido un comando invalido" 
+--   
+--   where 
+--     cond1 = (length cadena1 == 1) && (length cadena2 == 1)
+--     cond2 = (length cadena1 == 1) && (length cadena2 == 2)
+--     cond3 = (length cadena1 == 2) && (length cadena2 == 1)
+--     cond4 = (length cadena1 == 2) && (length cadena2 == 2)
+
+-- Funcion que determina los turnos de juego  
+turno1 :: Entrenador -> Entrenador -> IO ()
+turno1 ent1 ent2 = do 
+  putStrLn "Entrenador introduzca un Comando"
+  comando1 <- getLine
+  let cadena1 = words comando1
+  if length cadena1 == 0 then do
+    putStrLn "Entrenador debe introducir algun comando"
+    turno ent1 
+  else 
+    turno2 ent2
+      
+      
+turno2 :: Entrenador -> IO ()
+turno2 ent2 = do 
+  putStrLn "Entrenador introduzca un Comando"
+  comando2 <- getLine
+  let cadena2 = words comando2
+  if length cadena2 == 0 then do
+    putStrLn "Entrenador debe introducir algun comando"
+    turno2 ent2
+  else 
+    tamCadena ent1 ent2 cadena1 cadena2 
+--     
+-- realizarJugada :: Int -> Int -> Entrenador -> Entrenador -> IO ()
+-- realizarJugada num1 num2 ent1 ent2 = do 

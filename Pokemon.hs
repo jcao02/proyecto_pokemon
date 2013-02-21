@@ -62,7 +62,7 @@ data Especie = Especie
   , velocidad   :: Int 
   , prevolucion :: String   -- String que identifican al pokemon padre 
   , evolucion   :: String   -- String que identifica al pokemon hijo
-  } deriving (Show) 
+  } deriving (Show,Eq) 
 
 -- Declaracion de Ataques   
 data Ataque = Ataque 
@@ -82,5 +82,5 @@ data Monstruo = Monstruo
   , ataques     :: [Ataque] 
   , individual  :: Int
   , esfuerzo    :: Int
-  } deriving(Show)
+  } deriving(Show,Eq)
 
