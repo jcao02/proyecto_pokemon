@@ -8,7 +8,7 @@ data Entrenador = Entrenador
   { posicion    :: Int
   , actual      :: Int
   , pokemones   :: [Monstruo]
-  , rendido     :: Bool
+  , activos     :: Int
   } deriving Show
 
   
@@ -25,17 +25,11 @@ estaConciente m = (hpAct m) > 0
 
 -- Determina si un entrenador puede atacar con su pokemon actual
 puedeAtacar :: Entrenador -> Int -> Bool
-
-puedeAtacar ent atq = pps (ataques (getActual ent) !! atq) > 0 
+puedeAtacar ent atq = pps (ataques (getActual ent) !! (atq - 1)) > 0 
 
 -- Cambia el pokemon actual de un Entrenador
 cambiarPokemon :: Entrenador -> Int -> Entrenador
-cambiarPokemon ent p
-  | p >= length (pokemones ent) = ent
-  | otherwise                   = if not $ estaConciente $ (!!) (pokemones ent) (p - 1) then
-                                    ent
-                                  else
-                                    ent { actual = (p - 1) }
+cambiarPokemon ent n = ent { actual = (n - 1) }
 
 -- Retorna en una tupla de monstruos el monstruo mas rapido de primero                                   
 chequearVelocidad :: Entrenador -> Entrenador -> (Entrenador,Entrenador) 
@@ -48,20 +42,25 @@ chequearVelocidad ent1 ent2
     v1   = velocidad (especie (getActual ent1))
     v2   = velocidad (especie (getActual ent2))
   
-
+-- Funcion que determine si un entrenador perdio 
+perdio :: Entrenador -> Bool
+perdio ent = activos ent <= 0
 -- Actualiza la lista de pokemons con los vivos
 chequearVivos :: Entrenador -> Int -> IO Entrenador 
 chequearVivos ent num = do
   if not $ estaConciente $ getActual ent then do 
     nactual <- pedirPokemon ent num 
-    return  ent { actual = nactual }
+    print "\n\n"
+    print $ (activos ent) - 1
+    print "\n\n"
+    return  ent { actual = nactual, activos = (activos ent) - 1}
   else 
     return ent
 
 -- Funcion que pide un pokemon a un entrenador hasta que sea valido
 pedirPokemon :: Entrenador -> Int -> IO Int
 pedirPokemon ent num = do
-  let msj = "Entrenador" ++ (show num) ++ "su pokemon no puede continuar, elija uno nuevo" 
+  let msj = "Entrenador " ++ (show num) ++ " su pokemon no puede continuar, elija uno nuevo" 
   putStrLn msj
   input <- getLine 
   let nuevo = read input :: Int
@@ -76,30 +75,27 @@ pedirPokemon ent num = do
 -- Ataque
 atacar :: Entrenador -> Entrenador -> Int -> IO (Entrenador, Entrenador)
 atacar ent1 ent2 atq = do
-  let 
   return $ (ent1 { pokemones = npokemones (pokemones ent1) },  ent2 { pokemones = defpokemones (pokemones ent2)})
   where
     -- Funcion que actualiza lista de pokemones del entrenador que ataco
     npokemones = map (\x -> if x == getActual ent1 then x { ataques = nataques (ataques x)} else x) 
     -- Funcion que actualiza lista de pokemones del entrenador defensor
-    defpokemones = map (\x -> if x == getActual ent1 then x { hpAct = nHp } else x) 
+    defpokemones = map (\x -> if x == getActual ent2 then x { hpAct = (hpAct x) - dano } else x) 
     -- Funcion que actualiza el ataque utilizado con el nuevo PPs de la lista de ataques el Monstruo Ofensivo
-    nataques = map (\x -> if x == ataques (getActual ent1) !! atq then x { pps = (pps x) -1 } else x)
+    nataques = map (\x -> if x == ataques (getActual ent1) !! (atq - 1) then x { pps = (pps x) -1 } else x)
     -- Funcion que retorna la nueva hp dado el daño inflijido por el Pokemon Ofensivo al Defensivo 
-    nHp = (hpAct (getActual ent2)) - dano
-      where 
-        dano = damage lvl power atk dfse modi
-          where
-            lvl = nivel (getActual ent1)
-            power = pow $ (!!) (ataques (getActual ent1)) atq
-            -- Si es fisico el ataque, se usa el atributo ataque, de lo contrario se usa el Ataque especial
-            atk
-              | fisico $  ataques (getActual ent1) !! atq = estadistica 31 (ataque (especie (getActual ent1))) 255 (nivel (getActual ent1))
-              | otherwise                        = estadistica 31 (ataqueEsp (especie (getActual ent1))) 255 (nivel (getActual ent1))
+    dano = damage lvl power atk dfse modi
+      where
+	lvl = nivel (getActual ent1)
+	power = pow $ (!!) (ataques (getActual ent1)) (atq - 1)
+	  -- Si es fisico el ataque, se usa el atributo ataque, de lo contrario se usa el Ataque especial
+	atk
+	  | fisico $  ataques (getActual ent1) !! (atq - 1) = estadistica 31 (ataque (especie (getActual ent1))) 255 (nivel (getActual ent1))
+	  | otherwise                        = estadistica 31 (ataqueEsp (especie (getActual ent1))) 255 (nivel (getActual ent1))
             -- Si es fisico el ataque, se usa el atributo defensa, de lo conrario se usa la defensa especial
-            dfse 
-              | fisico $  ataques (getActual ent1) !! atq = estadistica 31 (defensa (especie (getActual ent2))) 255 (nivel (getActual ent2)) 
-              | otherwise                        = estadistica 31 (defensaEsp (especie (getActual ent2))) 255 (nivel (getActual ent2))
+	dfse 
+	  | fisico $  ataques (getActual ent1) !! (atq - 1) = estadistica 31 (defensa (especie (getActual ent2))) 255 (nivel (getActual ent2)) 
+	  | otherwise                        = estadistica 31 (defensaEsp (especie (getActual ent2))) 255 (nivel (getActual ent2))
             
             -- Modificador de daño
-            modi = modDano (especie (getActual ent1)) ((!!) (ataques (getActual ent1)) atq) (especie (getActual ent2)) 
+	modi = modDano (especie (getActual ent1)) ((ataques (getActual ent1)) !! (atq-1)) (especie (getActual ent2)) 
