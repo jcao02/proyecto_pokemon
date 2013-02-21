@@ -2,6 +2,7 @@ module Batalla where
 
 import Funciones
 import Pokemon
+
 -- Declaracion de tipo Entrenador
 data Entrenador = Entrenador
   { posicion    :: Int
@@ -22,6 +23,11 @@ estaConciente :: Monstruo -> Bool
 estaConciente m = (hpAct m) > 0 
 
 
+-- Determina si un entrenador puede atacar con su pokemon actual
+puedeAtacar :: Entrenador -> Int -> Bool
+
+puedeAtacar ent atq = pps (ataques (getActual ent) !! atq) > 0 
+
 -- Cambia el pokemon actual de un Entrenador
 cambiarPokemon :: Entrenador -> Int -> Entrenador
 cambiarPokemon ent p
@@ -31,7 +37,7 @@ cambiarPokemon ent p
                                   else
                                     ent { actual = (p - 1) }
 
-                                    
+-- Retorna en una tupla de monstruos el monstruo mas rapido de primero                                   
 chequearVelocidad :: Entrenador -> Entrenador -> (Monstruo,Monstruo) 
 chequearVelocidad ent1 ent2
   | v1 > v2   = (mon1,mon2)

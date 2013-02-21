@@ -129,7 +129,7 @@ getComando ent1 ent2 = do
 			      putStrLn "Introdujo un comando invalido"
 			      getComando ent1 ent2
 	 RENDIRSE  -> return (com , -1)
-	 ATACAR x  -> if puedeAtacar $ ent1 x then return (com , read ((!!) (words comando) 1) :: Int )
+	 ATACAR   -> if puedeAtacar ent1 (read comando :: Int) then return (com , read ((!!) (words comando) 1) :: Int )
 				       else do
 					 putStrLn "No hay suficientes PPs para atacar, intente de nuevo"
 					 getComando ent1 ent2
