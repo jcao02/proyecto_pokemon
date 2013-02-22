@@ -23,9 +23,10 @@ estadistica iv base ev nvl = div (dividendo * nvl) 100 +5
 -- Funcion que calcula el daño de un ataque
 damage :: Int -> Int -> Int -> Int -> Int -> Int
 
-damage nvlA pow atq def modi = modi * fromIntegral (div dividendo 50 + 2)
-  where 
-  dividendo = ((div (2 * nvlA) 5) + 2) * pow * div atq def 
+damage nvlA pow atq def modi = floor $ ((dividendo / 50) +2) * (fromIntegral modi)
+  where
+    dividendo = ((((fromIntegral (2 * nvlA)) / 5) + 2) * (fromIntegral pow) * (fromIntegral atq / fromIntegral def))
+
 
 --Retorna el modificador de daño, recibiendo las especies de los Monstruos que pelean y el ataque realizado
 modDano :: Especie -> Ataque -> Especie -> Int
