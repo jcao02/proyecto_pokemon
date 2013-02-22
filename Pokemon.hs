@@ -62,7 +62,7 @@ data Especie = Especie
   , velocidad   :: Int 
   , prevolucion :: String   -- String que identifican al pokemon padre 
   , evolucion   :: String   -- String que identifica al pokemon hijo
-  } deriving (Show,Eq) 
+  } deriving (Eq) 
 
 -- Declaracion de Ataques   
 data Ataque = Ataque 
@@ -71,7 +71,7 @@ data Ataque = Ataque
   , fisico     :: Bool
   , pps        :: Int
   , pow        :: Int
-  } deriving (Show, Eq)
+  } deriving (Eq)
   
 -- Declaracion de Monstruo
 data Monstruo = Monstruo
@@ -82,5 +82,54 @@ data Monstruo = Monstruo
   , ataques     :: [Ataque] 
   , individual  :: Int
   , esfuerzo    :: Int
-  } deriving(Show,Eq)
+  } deriving(Eq)
 
+-- Declaracion de Entrenador
+data Entrenador = Entrenador
+  { posicion    :: Int
+  , actual      :: Int
+  , pokemones   :: [Monstruo]
+  } deriving Eq
+
+-- Declaracion de instancias 
+
+-- Instancia de show para Especie
+instance Show Especie where 
+  show (Especie num nomb tipo hp atk def eatk edef vel prev ev) = 
+    "Numero de Especie: " ++ show num ++ "\n" 
+    ++ "Nombre de Especie: " ++ show nomb ++ "\n"
+    ++ "Tipos            : " ++ show tipo ++ "\n"
+    ++ "Hp base          : " ++ show hp ++ "\n"
+    ++ "Ataque base      : " ++ show atk ++ "\n"
+    ++ "Defensa base     : " ++ show def ++ "\n"
+    ++ "Ataque Especial  : " ++ show eatk ++ "\n"
+    ++ "Defensa Especial : " ++ show edef ++ "\n" 
+    ++ "Velocidad        : " ++ show vel ++ "\n" 
+    ++ "Preevolucion     : " ++ show prev ++ "\n" 
+    ++ "Evolucion        : " ++ show ev ++ "\n" 
+
+-- Instancia de show para Monstruo  
+instance Show Monstruo where
+  show (Monstruo esp snom nvl hp atks ind esf) = 
+    "Especie          : " ++ show (nombreEsp esp) ++ "\n"
+    ++ "SobreNombre      : " ++ show snom ++ "\n"
+    ++ "Nivel            : " ++ show nvl ++ "\n"
+    ++ "Hp Actual        : " ++ show hp ++ "\n"
+    ++ "Ataques          : " ++ show atks ++ "\n"
+    ++ "Valor Individual : " ++ show ind ++ "\n"
+    ++ "Valor de Esfuerzo: " ++ show esf ++ "\n"
+
+-- Instancia de show para Ataque
+instance Show Ataque where
+  show (Ataque nomb tipo fis pps pow) =
+    "Nombre   : " ++ show nomb ++ "\n"
+    ++ "Tipo     : " ++ show tipo ++ "\n"
+    ++ "Es fisico: " ++ show fis ++ "\n"
+    ++ "PPs      : " ++ show pps ++ "\n"
+    ++ "Poder    : " ++ show pow ++ "\n"
+
+-- Instancia de show de Entrenador 
+instance Show Entrenador where
+  show (Entrenador pos act pok) =
+    "Pokemon Actual:" ++ show act ++ "\n"
+    ++ "Pokemones     :" ++ show pok ++ "\n"  

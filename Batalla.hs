@@ -3,15 +3,6 @@ module Batalla where
 import Funciones
 import Pokemon
 
--- Declaracion de tipo Entrenador
-data Entrenador = Entrenador
-  { posicion    :: Int
-  , actual      :: Int
-  , pokemones   :: [Monstruo]
-  , activos     :: Int
-  } deriving Show
-
-  
 -- Funciones...
 -- Obtiene el pokemon actual de un entrenador
 getActual :: Entrenador -> Monstruo
@@ -44,16 +35,14 @@ chequearVelocidad ent1 ent2
   
 -- Funcion que determine si un entrenador perdio 
 perdio :: Entrenador -> Bool
-perdio ent = activos ent <= 0
+perdio ent = not $ all estaConciente (pokemones ent)
+
 -- Actualiza la lista de pokemons con los vivos
 chequearVivos :: Entrenador -> Int -> IO Entrenador 
 chequearVivos ent num = do
   if not $ estaConciente $ getActual ent then do 
     nactual <- pedirPokemon ent num 
-    print "\n\n"
-    print $ (activos ent) - 1
-    print "\n\n"
-    return  ent { actual = nactual, activos = (activos ent) - 1}
+    return  ent { actual = nactual }
   else 
     return ent
 
@@ -87,7 +76,7 @@ atacar ent1 ent2 atq = do
     dano = damage lvl power atk dfse modi
       where
 	lvl = nivel (getActual ent1)
-	power = pow $ (!!) (ataques (getActual ent1)) (atq - 1)
+	power = pow $ (ataques (getActual ent1)) !! (atq - 1)
 	  -- Si es fisico el ataque, se usa el atributo ataque, de lo contrario se usa el Ataque especial
 	atk
 	  | fisico $  ataques (getActual ent1) !! (atq - 1) = estadistica 31 (ataque (especie (getActual ent1))) 255 (nivel (getActual ent1))
