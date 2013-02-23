@@ -22,7 +22,7 @@ version:             0.1.0.0
 license:             AllRightsReserved
 
 -- The file containing the license text.
-license-file:        LICENSE
+--license-file:        LICENSE
 
 -- The package author(s).
 author:              Juan Arocha y Mary Ontiveros
@@ -51,5 +51,6 @@ executable pokesim
   -- Other library packages from which modules are imported.
   build-depends:       base ==4.5.*,
                        unix,
-                       split 
+                       split,
+                       containers
   

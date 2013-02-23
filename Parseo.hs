@@ -3,7 +3,6 @@ module Parseo where
 
 -- Modulos a usar 
 import Pokemon
-import Funciones
 import Data.Maybe
 import Data.List.Split
 import qualified Data.Map as Dic
@@ -11,7 +10,7 @@ import qualified Data.Map as Dic
 
 -- Funcion que crea una lista de especies ---
 listaEspecie :: [[String]] -> [Especie]   
-listaEspecie = map crear  
+listaEspecie = map crear   
   where
     crear [c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11] = Especie { numero      = (read c0  :: Int) 
                                                             , nombreEsp   = c1
@@ -67,11 +66,21 @@ listaMonstruo xs esp atq = map crear xs
 diccEspecie :: [Especie] -> Dic.Map Int Especie
 diccEspecie  = foldl (\ mapa esp -> Dic.insert (numero esp) esp mapa) Dic.empty 
 
+-- Modifica el diccionario de especies para poner la preevolucion
+setPreevolucion :: Dic.Map Int Especie -> Dic.Map Int Especie
+setPreevolucion esps = Dic.map funcion esps
+  where
+    funcion x
+      | isNothing prev = x
+      | otherwise       = x { prevolucion = nombreEsp $ fromJust prev}
+      where
+        prev 
+          | prevolucion x == "" = Nothing
+          | otherwise           = Dic.lookup (read (prevolucion x) :: Int) esps
 
 -- Diccionario de Ataques
 diccAtaque :: [Ataque] -> Dic.Map String Ataque
 diccAtaque  = foldl (\ mapa ata -> Dic.insert (nombreAtaq ata) ata  mapa) Dic.empty 
-
 
 -- Funcion que parsea los archivos  
 parser :: String -> [[String]]

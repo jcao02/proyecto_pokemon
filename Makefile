@@ -1,7 +1,5 @@
-all: clean pokesim
-
-pokesim: 
-	ghc --make pokesim.hs 
-
-clean:
-	rm *.o *.hi pokesim || true
+.PHONY: all clean
+all: ; cabal install --bindir .
+clean: 
+	rm pokesim
+	rm -rf dist
